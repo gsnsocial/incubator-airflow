@@ -490,6 +490,8 @@ def webserver(args):
     workers = args.workers or conf.get('webserver', 'workers')
     worker_timeout = (args.worker_timeout or
                       conf.get('webserver', 'webserver_worker_timeout'))
+    forwarded_allow_ips = args.forwarded_allow_ips or conf.get('webserver', 'forwarded_allow_ips')
+
     if args.debug:
         print(
             "Starting the web server on port {0} and host {1}.".format(
@@ -525,6 +527,9 @@ def webserver(args):
 
         if args.daemon:
             run_args += ["-D"]
+
+        if args.forwarded_allow_ips:
+            run_args += ['--forwarded-allow-ips', args.forwarded_allow_ips]
 
         module = "airflow.www.app:cached_app()".encode()
         run_args += [module]
@@ -910,6 +915,10 @@ class CLIFactory(object):
             default=conf.get('webserver', 'ERROR_LOGFILE'),
             help="The logfile to store the webserver error log. Use '-' to print to "
                  "stderr."),
+        'forwarded_allow_ips': Arg(
+            ("--forwarded_allow_ips", ),
+            default=conf.get('webserver', 'FORWARDED_ALLOW_IPS'),
+            help="Pass gunicorn front-end IPs allowed to handle set secure headers."),
         # resetdb
         'yes': Arg(
             ("-y", "--yes"),
@@ -1044,7 +1053,8 @@ class CLIFactory(object):
             'help': "Start a Airflow webserver instance",
             'args': ('port', 'workers', 'workerclass', 'worker_timeout', 'hostname',
                      'pid', 'daemon', 'stdout', 'stderr', 'access_logfile',
-                     'error_logfile', 'log_file', 'debug'),
+                     'error_logfile', 'log_file',
+                     'forwarded_allow_ips', 'debug'),
         }, {
             'func': resetdb,
             'help': "Burn down and rebuild the metadata database",

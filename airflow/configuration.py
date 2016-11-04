@@ -277,7 +277,12 @@ web_server_host = 0.0.0.0
 # The port on which to run the web server
 web_server_port = 8080
 
-# The time the gunicorn webserver waits before timing out on a worker
+# Pass gunicorn front-end IPs allowed to handle set secure headers.
+# Multiple IPs should be comma separated.  Set to * to disable checking.
+# Useful if you are running gunicorn behind a load balancer.
+forwarded_allow_ips =
+
+# Number of seconds the gunicorn webserver waits before timing out on a worker
 web_server_worker_timeout = 120
 
 # Secret key used to run your flask app
