@@ -280,7 +280,7 @@ web_server_port = 8080
 # Pass gunicorn front-end IPs allowed to handle set secure headers.
 # Multiple IPs should be comma separated.  Set to * to disable checking.
 # Useful if you are running gunicorn behind a load balancer.
-forwarded_allow_ips =
+# forwarded_allow_ips = *
 
 # Number of seconds the gunicorn webserver waits before timing out on a worker
 web_server_worker_timeout = 120

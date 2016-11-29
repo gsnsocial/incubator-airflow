@@ -490,7 +490,7 @@ def webserver(args):
     workers = args.workers or conf.get('webserver', 'workers')
     worker_timeout = (args.worker_timeout or
                       conf.get('webserver', 'webserver_worker_timeout'))
-    forwarded_allow_ips = (args.forwarded_allow_ips or 
+    forwarded_allow_ips = (args.forwarded_allow_ips or
                            conf.get('webserver', 'forwarded_allow_ips'))
 
     if args.debug:
