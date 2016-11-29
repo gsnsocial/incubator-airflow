@@ -490,7 +490,8 @@ def webserver(args):
     workers = args.workers or conf.get('webserver', 'workers')
     worker_timeout = (args.worker_timeout or
                       conf.get('webserver', 'webserver_worker_timeout'))
-    forwarded_allow_ips = args.forwarded_allow_ips or conf.get('webserver', 'forwarded_allow_ips')
+    forwarded_allow_ips = (args.forwarded_allow_ips or 
+                           conf.get('webserver', 'forwarded_allow_ips'))
 
     if args.debug:
         print(
@@ -528,8 +529,8 @@ def webserver(args):
         if args.daemon:
             run_args += ["-D"]
 
-        if args.forwarded_allow_ips:
-            run_args += ['--forwarded-allow-ips', args.forwarded_allow_ips]
+        if forwarded_allow_ips:
+            run_args += ['--forwarded-allow-ips', forwarded_allow_ips]
 
         module = "airflow.www.app:cached_app()".encode()
         run_args += [module]
