@@ -35,7 +35,7 @@ import sys
 import airflow
 from airflow import jobs, settings
 from airflow import configuration as conf
-from airflow.exceptions import AirflowException
+from airflow.configuration import AirflowConfigException
 from airflow.executors import DEFAULT_EXECUTOR
 from airflow.models import DagModel, DagBag, TaskInstance, DagPickle, DagRun, Variable
 from airflow.utils import db as db_utils
@@ -494,7 +494,7 @@ def webserver(args):
     try:
         forwarded_allow_ips = (args.forwarded_allow_ips or
                                conf.get('webserver', 'forwarded_allow_ips'))
-    except AirflowException:
+    except AirflowConfigException:
         forwarded_allow_ips = None
 
     if args.debug:
