@@ -27,6 +27,7 @@ from airflow.utils import db as db_utils
 from airflow.utils import logging as logging_utils
 from airflow.utils.state import State
 from airflow.exceptions import AirflowException
+from airflow.configuration import AirflowConfigException
 
 DAGS_FOLDER = os.path.expanduser(conf.get('core', 'DAGS_FOLDER'))
 
@@ -394,6 +395,12 @@ def webserver(args):
     workers = args.workers or conf.get('webserver', 'workers')
     worker_timeout = (args.worker_timeout or
                       conf.get('webserver', 'webserver_worker_timeout'))
+    try:
+        forwarded_allow_ips = (args.forwarded_allow_ips or
+                               conf.get('webserver', 'forwarded_allow_ips'))
+    except (AirflowException, AirflowConfigException):
+        forwarded_allow_ips = None
+
     if args.debug:
         print(
             "Starting the web server on port {0} and host {1}.".format(
@@ -416,6 +423,9 @@ def webserver(args):
 
         if args.daemon:
             run_args.append("-D")
+
+        if forwarded_allow_ips:
+            run_args += ['--forwarded-allow-ips', forwarded_allow_ips]
 
         module = "airflow.www.app:cached_app()".encode()
         run_args.append(module)
@@ -768,6 +778,10 @@ class CLIFactory(object):
             ("-d", "--debug"),
             "Use the server that ships with Flask in debug mode",
             "store_true"),
+        'forwarded_allow_ips': Arg(
+            ("--forwarded_allow_ips", ),
+            default=None,
+            help="Pass gunicorn front-end IPs allowed to handle set secure headers."),
         # resetdb
         'yes': Arg(
             ("-y", "--yes"),
@@ -891,6 +905,7 @@ class CLIFactory(object):
             'help': "Start a Airflow webserver instance",
             'args': ('port', 'workers', 'workerclass', 'worker_timeout', 'hostname',
                      'pid', 'daemon', 'stdout', 'stderr', 'log_file',
+                     'forwarded_allow_ips',
                      'debug'),
         }, {
             'func': resetdb,

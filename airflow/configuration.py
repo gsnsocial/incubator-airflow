@@ -240,6 +240,12 @@ web_server_host = 0.0.0.0
 # The port on which to run the web server
 web_server_port = 8080
 
+# Pass gunicorn front-end IPs allowed to handle set secure headers.
+# Multiple IPs should be comma separated.  Set to * to disable checking.
+# Useful if you are running gunicorn behind a load balancer.
+# See http://docs.gunicorn.org/en/stable/settings.html#forwarded-allow-ips
+# forwarded_allow_ips = *
+
 # The time the gunicorn webserver waits before timing out on a worker
 web_server_worker_timeout = 120
 
@@ -396,6 +402,7 @@ default_owner = airflow
 base_url = http://localhost:8080
 web_server_host = 0.0.0.0
 web_server_port = 8080
+forwarded_allow_ips = *
 
 [email]
 email_backend = airflow.utils.email.send_email_smtp
